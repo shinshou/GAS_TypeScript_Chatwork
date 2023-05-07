@@ -26,10 +26,17 @@ async function doPost(e: postEvent) {
 
         // LINEから送られてきたメッセージを取得
         const user_message = json.webhook_event.body;
-        setLog(`${json.webhook_event.from_account_id}：メッセージが送信されました。`);
+        setLog(`${json.webhook_event.account_id}：メッセージが送信されました。`);
+
+        if (user_message.includes("チャットGPTからの返信")) {
+            return;
+        }
+
+        setLog(user_message)
+        setLog(json.webhook_event)
 
         // userIDごとにチャット履歴があるか確認する。
-        let messages = await chat(`${json.webhook_event.from_account_id}:user`, user_message);
+        let messages = await chat(`${json.webhook_event.account_id}:user`, user_message);
 
         if (user_message !== "[削除]") {
             if (!messages) {
@@ -61,7 +68,7 @@ async function doPost(e: postEvent) {
             chatworkReply(json, res.choices[0].message.content.trimStart());
 
             if (!user_message.includes("[制約]")) {
-                chat(`${json.webhook_event.from_account_id}:assistant`, res.choices[0].message.content.trimStart());
+                chat(`${json.webhook_event.account_id}:assistant`, res.choices[0].message.content.trimStart());
             }
         } else {
             chatworkReply(json, "チャット履歴が削除されました。");

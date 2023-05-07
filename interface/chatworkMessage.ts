@@ -3,8 +3,7 @@ export interface jsonMessage {
     webhook_event_type: string;
     webhook_event_time: number;
     webhook_event: {
-        from_account_id: number;
-        to_account_id: number;
+        account_id: number;
         room_id: number;
         message_id: string;
         body: string;
